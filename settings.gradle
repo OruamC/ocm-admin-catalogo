@@ -1,0 +1,5 @@
+rootProject.name = 'ocm-admin-catalogo'
+include 'domain'
+include 'application'
+include 'infrastructure'
+
