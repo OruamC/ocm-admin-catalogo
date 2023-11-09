@@ -1,6 +1,7 @@
 package com.ocm.admin.domain.category;
 
 import com.ocm.admin.domain.AggregateRoot;
+import com.ocm.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -40,6 +41,11 @@ public class Category extends AggregateRoot<CategoryID> {
         final var id = CategoryID.unique();
         final var now = Instant.now();
         return new Category(id, aName, aDescription, isActive, now, now, null);
+    }
+
+    @Override
+    public void validate(final ValidationHandler handler) {
+        new CategoryValidator(this, handler).validate();
     }
 
     @Override
