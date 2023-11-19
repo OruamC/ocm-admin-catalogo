@@ -1,7 +1,6 @@
 package com.ocm.admin.application.category.create;
 
 import com.ocm.admin.domain.category.CategoryGateway;
-import com.ocm.admin.domain.exceptions.DomainException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +39,7 @@ public class CreateCategoryUseCaseTest {
         when(categoryGateway.create(any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var actualOutput = useCase.execute(aCommand);
+        final var actualOutput = useCase.execute(aCommand).get();
 
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
@@ -48,12 +47,12 @@ public class CreateCategoryUseCaseTest {
         verify(categoryGateway, times(1))
                 .create(argThat(aCategory ->
                         Objects.equals(expectedName, aCategory.getName())
-                            && Objects.equals(expectedDescription, aCategory.getDescription())
-                            && Objects.equals(expectedIsActive, aCategory.getIsActive())
-                            && Objects.nonNull(aCategory.getId())
-                            && Objects.nonNull(aCategory.getCreatedAt())
-                            && Objects.nonNull(aCategory.getUpdatedAt())
-                            && Objects.isNull(aCategory.getDeletedAt())
+                                && Objects.equals(expectedDescription, aCategory.getDescription())
+                                && Objects.equals(expectedIsActive, aCategory.getIsActive())
+                                && Objects.nonNull(aCategory.getId())
+                                && Objects.nonNull(aCategory.getCreatedAt())
+                                && Objects.nonNull(aCategory.getUpdatedAt())
+                                && Objects.isNull(aCategory.getDeletedAt())
                 ));
     }
 
@@ -68,10 +67,10 @@ public class CreateCategoryUseCaseTest {
         final var aCommand =
                 CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
-        final var actualException =
-                Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
 
         verify(categoryGateway, times(0)).create(any());
     }
@@ -88,7 +87,7 @@ public class CreateCategoryUseCaseTest {
         when(categoryGateway.create(any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var actualOutput = useCase.execute(aCommand);
+        final var actualOutput = useCase.execute(aCommand).get();
 
         Assertions.assertNotNull(actualOutput);
         Assertions.assertNotNull(actualOutput.id());
@@ -119,12 +118,12 @@ public class CreateCategoryUseCaseTest {
         when(categoryGateway.create(any()))
                 .thenThrow(new IllegalStateException(expectedErrorMessage));
 
-        final var actualException =
-                Assertions.assertThrows(IllegalStateException.class, () -> useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
 
-        verify(categoryGateway, times(1)) .create(argThat(aCategory ->
+        verify(categoryGateway, times(1)).create(argThat(aCategory ->
                 Objects.equals(expectedName, aCategory.getName())
                         && Objects.equals(expectedDescription, aCategory.getDescription())
                         && Objects.equals(expectedIsActive, aCategory.getIsActive())
