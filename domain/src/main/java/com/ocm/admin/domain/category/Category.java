@@ -4,9 +4,8 @@ import com.ocm.admin.domain.AggregateRoot;
 import com.ocm.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
-import java.util.UUID;
 
-public class Category extends AggregateRoot<CategoryID> {
+public class Category extends AggregateRoot<CategoryID> implements Cloneable {
 
     private String name;
     private String description;
@@ -57,7 +56,7 @@ public class Category extends AggregateRoot<CategoryID> {
     }
 
     public Category deactivate() {
-        if(getDeletedAt() == null) {
+        if (getDeletedAt() == null) {
             this.deletedAt = Instant.now();
         }
 
@@ -71,7 +70,7 @@ public class Category extends AggregateRoot<CategoryID> {
             final String aDescription,
             final Boolean isActive
     ) {
-        if(isActive) {
+        if (isActive) {
             activate();
         } else {
             deactivate();
@@ -109,5 +108,14 @@ public class Category extends AggregateRoot<CategoryID> {
 
     public Instant getDeletedAt() {
         return deletedAt;
+    }
+
+    @Override
+    public Category clone() {
+        try {
+            return (Category) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
