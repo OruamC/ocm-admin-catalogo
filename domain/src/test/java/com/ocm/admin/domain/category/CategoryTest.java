@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 
 public class CategoryTest {
 
@@ -149,7 +150,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivate() {
+    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivate() throws InterruptedException {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = false;
@@ -157,14 +158,14 @@ public class CategoryTest {
         final var aCategory =
                 Category.newCategory(expectedName, expectedDescription, true);
 
-        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
-
         final var createdAt = aCategory.getCreatedAt();
         final var updatedAt = aCategory.getUpdatedAt();
 
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
         Assertions.assertTrue(aCategory.getIsActive());
         Assertions.assertNull(aCategory.getDeletedAt());
 
+        TimeUnit.MILLISECONDS.sleep(200);
         final var actualCategory = aCategory.deactivate();
 
         Assertions.assertDoesNotThrow(() -> actualCategory.validate(new ThrowsValidationHandler()));
@@ -179,7 +180,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivate() {
+    public void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivate() throws InterruptedException {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -187,14 +188,14 @@ public class CategoryTest {
         final var aCategory =
                 Category.newCategory(expectedName, expectedDescription, false);
 
-        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
-
         final var createdAt = aCategory.getCreatedAt();
         final var updatedAt = aCategory.getUpdatedAt();
 
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
         Assertions.assertFalse(aCategory.getIsActive());
         Assertions.assertNotNull(aCategory.getDeletedAt());
 
+        TimeUnit.MILLISECONDS.sleep(200);
         final var actualCategory = aCategory.activate();
 
         Assertions.assertDoesNotThrow(() -> actualCategory.validate(new ThrowsValidationHandler()));
@@ -209,7 +210,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdate_thanReturnCategoryUpdated() {
+    public void givenAValidCategory_whenCallUpdate_thanReturnCategoryUpdated() throws InterruptedException {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -217,11 +218,12 @@ public class CategoryTest {
         final var aCategory =
                 Category.newCategory("Film", "A categoria", expectedIsActive);
 
-        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
-
         final var createdAt = aCategory.getCreatedAt();
         final var updatedAt = aCategory.getUpdatedAt();
 
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
+
+        TimeUnit.MILLISECONDS.sleep(200);
         final var actualCategory = aCategory.update(expectedName, expectedDescription, expectedIsActive);
 
         Assertions.assertDoesNotThrow(() -> actualCategory.validate(new ThrowsValidationHandler()));
@@ -236,7 +238,7 @@ public class CategoryTest {
     }
 
     @Test
-    public void givenAValidCategory_whenCallUpdateToInactive_thanReturnCategoryUpdated() {
+    public void givenAValidCategory_whenCallUpdateToInactive_thanReturnCategoryUpdated() throws InterruptedException {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = false;
@@ -244,13 +246,14 @@ public class CategoryTest {
         final var aCategory =
                 Category.newCategory("Film", "A categoria", true);
 
+        final var createdAt = aCategory.getCreatedAt();
+        final var updatedAt = aCategory.getUpdatedAt();
+
         Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
         Assertions.assertTrue(aCategory.getIsActive());
         Assertions.assertNull(aCategory.getDeletedAt());
 
-        final var createdAt = aCategory.getCreatedAt();
-        final var updatedAt = aCategory.getUpdatedAt();
-
+        TimeUnit.MILLISECONDS.sleep(200);
         final var actualCategory = aCategory.update(expectedName, expectedDescription, false);
 
         Assertions.assertDoesNotThrow(() -> actualCategory.validate(new ThrowsValidationHandler()));
@@ -272,10 +275,10 @@ public class CategoryTest {
         final var aCategory =
                 Category.newCategory("Filmes", "A categoria", expectedIsActive);
 
-        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
-
         final var createdAt = aCategory.getCreatedAt();
         final var updatedAt = aCategory.getUpdatedAt();
+
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
 
         final var actualCategory = aCategory.update(expectedName, expectedDescription, expectedIsActive);
 
