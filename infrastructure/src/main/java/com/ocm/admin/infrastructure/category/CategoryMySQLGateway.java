@@ -5,6 +5,7 @@ import com.ocm.admin.domain.category.CategoryGateway;
 import com.ocm.admin.domain.category.CategoryID;
 import com.ocm.admin.domain.category.CategorySearchQuery;
 import com.ocm.admin.domain.pagination.Pagination;
+import com.ocm.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.ocm.admin.infrastructure.category.persistence.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Category create(Category aCategory) {
-        return null;
+        return this.repository.save(CategoryJpaEntity.from(aCategory)).toAggregate();
     }
 
     @Override
