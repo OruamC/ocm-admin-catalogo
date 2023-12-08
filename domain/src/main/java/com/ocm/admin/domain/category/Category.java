@@ -4,6 +4,7 @@ import com.ocm.admin.domain.AggregateRoot;
 import com.ocm.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Category extends AggregateRoot<CategoryID> implements Cloneable {
 
@@ -27,8 +28,8 @@ public class Category extends AggregateRoot<CategoryID> implements Cloneable {
         this.name = aName;
         this.description = aDescription;
         this.active = isActive;
-        this.createdAt = aCreationDate;
-        this.updatedAt = aUpdateDate;
+        this.createdAt = Objects.requireNonNull(aCreationDate, "'createdAt' should not by null");
+        this.updatedAt = Objects.requireNonNull(aUpdateDate, "'updatedAt' should not by null");
         this.deletedAt = aDeleteDate;
     }
 
