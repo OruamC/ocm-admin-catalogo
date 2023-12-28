@@ -1,6 +1,5 @@
 package com.ocm.admin.application.category.update;
 
-import com.ocm.admin.application.UseCase;
 import com.ocm.admin.domain.category.Category;
 import com.ocm.admin.domain.category.CategoryGateway;
 import com.ocm.admin.domain.category.CategoryID;
@@ -14,8 +13,7 @@ import java.util.function.Supplier;
 import static io.vavr.API.Left;
 import static io.vavr.API.Try;
 
-public class DefaultUpdateCategoryUseCase
-        extends UseCase<UpdateCategoryCommand, Either<Notification, UpdateCategoryOutput>> {
+public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
 
     private final CategoryGateway categoryGateway;
 
