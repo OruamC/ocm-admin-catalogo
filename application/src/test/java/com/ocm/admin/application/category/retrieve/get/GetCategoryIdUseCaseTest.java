@@ -38,7 +38,6 @@ public class GetCategoryIdUseCaseTest {
         final var aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
         final var expectedId = aCategory.getId();
 
-
         when(categoryGateway.findById(eq(expectedId)))
                 .thenReturn(Optional.of(aCategory.clone()));
 
