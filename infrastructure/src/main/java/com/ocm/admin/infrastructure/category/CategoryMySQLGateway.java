@@ -7,9 +7,15 @@ import com.ocm.admin.domain.category.CategorySearchQuery;
 import com.ocm.admin.domain.pagination.Pagination;
 import com.ocm.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.ocm.admin.infrastructure.category.persistence.CategoryRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static com.ocm.admin.infrastructure.utils.SpecificationUtils.like;
+import static org.springframework.data.domain.Sort.Direction.fromString;
 
 @Service
 public class CategoryMySQLGateway implements CategoryGateway {
@@ -47,8 +53,31 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
-        return null;
+    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+        // Paginacao
+        final var page = PageRequest.of(
+                aQuery.page(),
+                aQuery.perPage(),
+                Sort.by(fromString(aQuery.direction()), aQuery.sort())
+        );
+
+        // Busca dinamica pelo criterio terms (name ou descritpion)
+        final var specifications = Optional.ofNullable(aQuery.terms())
+                .filter(str -> !str.isBlank())
+                .map(str -> {
+                    final Specification<CategoryJpaEntity> nameLike = like("name", str);
+                    final Specification<CategoryJpaEntity> descriptionLike = like("description", str);
+                    return nameLike.or(descriptionLike);
+                })
+                .orElse(null);
+
+        final var pageResult = this.repository.findAll(Specification.where(specifications), page);
+        return new Pagination<>(
+                pageResult.getNumber(),
+                pageResult.getSize(),
+                pageResult.getTotalElements(),
+                pageResult.map(CategoryJpaEntity::toAggregate).stream().toList()
+        );
     }
 
     private Category save(Category aCategory) {
