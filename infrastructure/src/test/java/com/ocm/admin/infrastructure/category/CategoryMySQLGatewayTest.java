@@ -3,7 +3,7 @@ package com.ocm.admin.infrastructure.category;
 import com.ocm.admin.domain.category.Category;
 import com.ocm.admin.domain.category.CategoryID;
 import com.ocm.admin.domain.category.CategorySearchQuery;
-import com.ocm.admin.infrastructure.MySQLGatewayTest;
+import com.ocm.admin.MySQLGatewayTest;
 import com.ocm.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.ocm.admin.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;

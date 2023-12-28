@@ -1,7 +1,7 @@
 package com.ocm.admin.infrastructure.category.persistence;
 
 import com.ocm.admin.domain.category.Category;
-import com.ocm.admin.infrastructure.MySQLGatewayTest;
+import com.ocm.admin.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
