@@ -5,6 +5,7 @@ import com.ocm.admin.domain.category.Category;
 import com.ocm.admin.domain.category.CategoryGateway;
 import com.ocm.admin.domain.category.CategoryID;
 import com.ocm.admin.domain.exceptions.DomainException;
+import com.ocm.admin.domain.exceptions.NotFoundException;
 import com.ocm.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.ocm.admin.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -50,14 +51,14 @@ public class GetCategoryIdUseCaseIT {
     @Test
     public void givenAnInvalidId_whenCallsGetCategory_shouldReturnNotFound() {
         final var expectedId = CategoryID.from("123");
-        final var expectedErrorMessage = "Category with ID 123 was not-found";
+        final var expectedErrorMessage = "Category with ID 123 was not found";
 
         final var actualException = Assertions.assertThrows(
-                DomainException.class,
+                NotFoundException.class,
                 () -> useCase.execute(expectedId.getValue())
         );
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 
     @Test
