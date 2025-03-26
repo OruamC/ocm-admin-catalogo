@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ocm.admin.ControllerTest;
 import com.ocm.admin.application.category.create.CreateCategoryOutput;
 import com.ocm.admin.application.category.create.CreateCategoryUseCase;
+import com.ocm.admin.application.category.delete.DeleteCategoryUseCase;
 import com.ocm.admin.application.category.retrieve.get.CategoryOutput;
 import com.ocm.admin.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.ocm.admin.application.category.update.UpdateCategoryOutput;
@@ -16,7 +17,6 @@ import com.ocm.admin.domain.validation.Error;
 import com.ocm.admin.domain.validation.handler.Notification;
 import com.ocm.admin.infrastructure.category.models.CreateCategoryApiInput;
 import com.ocm.admin.infrastructure.category.models.UpdateCategoryApiInput;
-import io.vavr.API;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -51,6 +51,9 @@ public class CategoryAPITest {
 
     @MockBean
     private UpdateCategoryUseCase updateCategoryUseCase;
+
+    @MockBean
+    private DeleteCategoryUseCase deleteCategoryUseCase;
 
     @Test
     public void givenAValidaCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {
@@ -325,5 +328,28 @@ public class CategoryAPITest {
                         && Objects.equals(expectedDescription, cmd.description())
                         && Objects.equals(expectedIsActive, cmd.isActive())
         ));
+    }
+
+    @Test
+    public void givenAValidId_whenCallsDeleteCategory_shouldReturnNoContent() throws Exception {
+        // given
+        final var expectedId = "123";
+
+        doNothing()
+                .when(deleteCategoryUseCase).execute(any());
+
+        // when
+        final var request = delete("/categories/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        final var response = this.mvc.perform(request)
+                .andDo(print());
+
+        // then
+        response.andExpect(status().isNoContent());
+
+        verify(deleteCategoryUseCase, times(1))
+                .execute(eq(expectedId));
     }
 }

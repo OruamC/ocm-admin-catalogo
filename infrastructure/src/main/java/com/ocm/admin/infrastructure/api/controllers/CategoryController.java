@@ -3,6 +3,7 @@ package com.ocm.admin.infrastructure.api.controllers;
 import com.ocm.admin.application.category.create.CreateCategoryCommand;
 import com.ocm.admin.application.category.create.CreateCategoryOutput;
 import com.ocm.admin.application.category.create.CreateCategoryUseCase;
+import com.ocm.admin.application.category.delete.DeleteCategoryUseCase;
 import com.ocm.admin.application.category.retrieve.get.GetCategoryByIdUseCase;
 import com.ocm.admin.application.category.update.UpdateCategoryCommand;
 import com.ocm.admin.application.category.update.UpdateCategoryOutput;
@@ -27,14 +28,17 @@ public class CategoryController implements CategoryAPI {
     private final CreateCategoryUseCase createCategoryUseCase;
     private final GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
+    private final DeleteCategoryUseCase deleteCategoryUseCase;
 
     public CategoryController(
             final CreateCategoryUseCase createCategoryUseCase,
             final GetCategoryByIdUseCase getCategoryByIdUseCase,
-            UpdateCategoryUseCase updateCategoryUseCase) {
+            UpdateCategoryUseCase updateCategoryUseCase,
+            DeleteCategoryUseCase deleteCategoryUseCase) {
         this.createCategoryUseCase = Objects.requireNonNull(createCategoryUseCase);
         this.getCategoryByIdUseCase = Objects.requireNonNull(getCategoryByIdUseCase);
         this.updateCategoryUseCase = updateCategoryUseCase;
+        this.deleteCategoryUseCase = deleteCategoryUseCase;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<?> udateById(final String id, final UpdateCategoryApiInput input) {
+    public ResponseEntity<?> updateById(final String id, final UpdateCategoryApiInput input) {
         final var aCommand = UpdateCategoryCommand.with(
                 id,
                 input.name(),
@@ -81,5 +85,10 @@ public class CategoryController implements CategoryAPI {
 
         return this.updateCategoryUseCase.execute(aCommand)
                 .fold(onError, onSuccess);
+    }
+
+    @Override
+    public void deleteById(final String anId) {
+        this.deleteCategoryUseCase.execute(anId);
     }
 }
