@@ -3,6 +3,7 @@ package com.ocm.admin.infrastructure.api;
 import com.ocm.admin.domain.pagination.Pagination;
 import com.ocm.admin.infrastructure.category.models.CategoryApiOutput;
 import com.ocm.admin.infrastructure.category.models.CreateCategoryApiInput;
+import com.ocm.admin.infrastructure.category.models.UpdateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -54,4 +55,17 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "500", description = "An internal server error was throw"),
     })
     CategoryApiOutput getById(@PathVariable(name = "id") String id);
+
+    @PutMapping(
+            value = "{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Get a category with it's identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Category was not found"),
+            @ApiResponse(responseCode = "500", description = "An internal server error was throw"),
+    })
+    ResponseEntity<?> udateById(@PathVariable(name = "id") String id, @RequestBody UpdateCategoryApiInput input);
 }

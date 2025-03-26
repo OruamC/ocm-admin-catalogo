@@ -5,6 +5,7 @@ import com.ocm.admin.domain.category.Category;
 import com.ocm.admin.domain.category.CategoryGateway;
 import com.ocm.admin.domain.category.CategoryID;
 import com.ocm.admin.domain.exceptions.DomainException;
+import com.ocm.admin.domain.exceptions.NotFoundException;
 import com.ocm.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import com.ocm.admin.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
@@ -169,7 +170,7 @@ public class UpdateCategoryUseCaseIT {
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var expectedId = "123";
-        final var expectedErrorMessage = "Category with ID 123 was not-found";
+        final var expectedErrorMessage = "Category with ID 123 was not found";
         final var expectedErrorCount = 1;
 
         final var aCommand = UpdateCategoryCommand.with(
@@ -180,10 +181,9 @@ public class UpdateCategoryUseCaseIT {
         );
 
         final var actualException =
-                Assertions.assertThrows(DomainException.class, () -> useCase.execute(aCommand));
+                Assertions.assertThrows(NotFoundException.class, () -> useCase.execute(aCommand));
 
-        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
-        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
 
         verify(categoryGateway, times(0)).update(any());
     }
